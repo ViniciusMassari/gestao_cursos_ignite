@@ -1,0 +1,18 @@
+services:
+  postgres:
+    env_file:
+      - path: .env
+    container_name: gestao_cursos_postgres
+    image: bitnami/postgresql
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_DB=${PG_DB}
+    networks:
+      - api_bridge
+
+networks:
+  api_bridge:
+    driver: bridge
