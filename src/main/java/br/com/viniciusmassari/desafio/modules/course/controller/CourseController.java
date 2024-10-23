@@ -9,7 +9,7 @@ public class CourseController {
     public void create_course() {
     }
 
-    @GetMapping
+    @GetMapping("/show")
     public void show_courses() {
     }
 
