@@ -15,11 +15,14 @@ public class CreateInstructorUseCase {
     private InstructorRepository instructorRepository;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     public void execute(CreateInstructorDTO createInstructorDTO) throws Exception {
-
-        var instructor = instructorRepository.findByEmail(createInstructorDTO.getEmail());
+        // var algumacoisa = this.instructorRepository.findAll();
+        // for (InstructorEntity instructorEntity : algumacoisa) {
+        // System.out.println(instructorEntity.getName());
+        // }
+        var instructor = this.instructorRepository.findByEmail(createInstructorDTO.getEmail());
         instructor.ifPresent(user -> {
             throw new InstructorAlreadyExist();
         });

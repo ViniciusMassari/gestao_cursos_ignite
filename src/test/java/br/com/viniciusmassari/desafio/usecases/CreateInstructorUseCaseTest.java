@@ -27,7 +27,7 @@ public class CreateInstructorUseCaseTest {
     private CreateInstructorUseCase createInstructorUseCase;
 
     @Mock
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Mock
     private InstructorRepository instructorRepository;

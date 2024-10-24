@@ -34,3 +34,7 @@ build/
 
 env.properties
 .env
+
+
+private_key.pem
+public_key.pem
