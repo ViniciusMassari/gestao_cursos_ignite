@@ -16,9 +16,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CreateInstructorDTO {
     @NotBlank(message = "O nome não pode ser vazio")
+    @NotNull(message = "O campo nome não pode ser nulo")
     private String name;
 
     @Email(message = "O campo email precisa ser válido")
+    @NotBlank(message = "O campo email não pode estar vazio")
+    @NotNull(message = "O campo email não pode ser nulo")
     private String email;
 
     @Length(min = 6, message = "A senha precisa ter pelo menos 6 caracteres")

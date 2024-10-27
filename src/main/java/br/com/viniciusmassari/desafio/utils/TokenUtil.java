@@ -17,8 +17,10 @@ import java.util.Base64;
 import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
 @Service
 public class TokenUtil {
@@ -37,6 +39,15 @@ public class TokenUtil {
         } catch (JWTCreationException e) {
             throw new JWTCreationException("JWT could not be created", e);
         }
+    }
+
+    public String validateToken(String token) throws IllegalArgumentException, Exception {
+        String newToken = token.replace("Bearer ", "");
+        Algorithm algorithm = Algorithm.RSA256(getPublicKey(), null);
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedJWT = verifier.verify(newToken);
+
+        return decodedJWT.getSubject();
     }
 
     private RSAPrivateKey getPrivateKey() throws Exception {

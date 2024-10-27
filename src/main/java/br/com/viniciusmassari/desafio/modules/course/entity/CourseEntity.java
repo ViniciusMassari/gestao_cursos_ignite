@@ -8,10 +8,16 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import br.com.viniciusmassari.desafio.modules.instructor.entity.InstructorEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity(name = "course")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CourseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
