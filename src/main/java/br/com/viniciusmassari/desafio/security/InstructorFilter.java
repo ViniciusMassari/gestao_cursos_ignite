@@ -55,6 +55,6 @@ public class InstructorFilter extends OncePerRequestFilter {
     }
 
     private boolean uriDoesNotStartWithCourses(String requestUri) {
-        return !requestUri.startsWith("/courses");
+        return !requestUri.startsWith("/courses") || requestUri.endsWith("show/");
     }
 }
