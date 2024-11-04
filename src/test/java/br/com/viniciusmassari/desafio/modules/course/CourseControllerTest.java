@@ -1,6 +1,9 @@
 package br.com.viniciusmassari.desafio.modules.course;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -158,6 +161,50 @@ public class CourseControllerTest {
                                                                 updateCourseDTO))
                                                 .header("Authorization", "Bearer " + token))
                                 .andExpect(MockMvcResultMatchers.status().isOk());
+        }
+
+        @DisplayName("Should be able change course status")
+        @Test
+        public void should_change_course_status() throws Exception {
+                String email = "test@example.com";
+                String password = "123456";
+                String encodedPassword = this.passwordEncoder.encode(password);
+                InstructorEntity instructorEntity = InstructorEntity.builder().name("NAME_TEST").email(email)
+                                .password(encodedPassword).build();
+                AuthInstructorDTO authInstructorDTO = AuthInstructorDTO.builder().email(email).password(password)
+                                .build();
+
+                this.instructorRepository.saveAndFlush(instructorEntity);
+
+                var response = mvc.perform(
+                                MockMvcRequestBuilders.post("/instructor/auth/")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(TestUtils.objectToJSON(
+                                                                authInstructorDTO)))
+                                .andReturn();
+                ObjectMapper mapper = new ObjectMapper();
+                AuthInstructorResponseDTO responseDTO = mapper.readValue(response.getResponse().getContentAsString(),
+                                AuthInstructorResponseDTO.class);
+
+                String token = responseDTO.getToken();
+
+                CourseEntity courseEntity = CourseEntity.builder().instructorId(instructorEntity.getId())
+                                .instructorEntity(instructorEntity).Active(CourseActive.ACTIVE).category("Category")
+                                .description("description").name("name").build();
+
+                courseRepository.saveAndFlush(courseEntity);
+
+                mvc.perform(
+                                MockMvcRequestBuilders.patch("/courses/" + courseEntity.getId())
+                                                .contentType(MediaType.APPLICATION_JSON)
+
+                                                .header("Authorization", "Bearer " + token))
+                                .andExpect(MockMvcResultMatchers.status().isOk());
+
+                Optional<CourseEntity> courseWithNewStatus = courseRepository.findById(courseEntity.getId());
+
+                assertEquals(courseWithNewStatus.get().getActive(), CourseActive.NOT);
+
         }
 
 }
