@@ -41,6 +41,8 @@ public class CourseController {
 
             this.createCourseUseCase.execute(createCourseDTO);
 
+            this.createCourseUseCase.execute(createCourseDTO);
+
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
