@@ -41,13 +41,13 @@ public class TokenUtil {
         }
     }
 
-    public String validateToken(String token) throws IllegalArgumentException, Exception {
+    public ValidateTokenDTO validateToken(String token) throws IllegalArgumentException, Exception {
         String newToken = token.replace("Bearer ", "");
         Algorithm algorithm = Algorithm.RSA256(getPublicKey(), null);
         JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT decodedJWT = verifier.verify(newToken);
 
-        return decodedJWT.getSubject();
+        return ValidateTokenDTO.builder().token(decodedJWT).subject(decodedJWT.getSubject()).build();
     }
 
     private RSAPrivateKey getPrivateKey() throws Exception {

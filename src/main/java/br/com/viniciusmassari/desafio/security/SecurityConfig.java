@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/instructor/").permitAll()
                             .requestMatchers("/instructor/auth/").permitAll()
-                            .requestMatchers("/courses/show").permitAll();
+                            .requestMatchers("/courses/show/").permitAll();
                     auth.anyRequest().authenticated();
                 }).addFilterBefore(this.instructorFilter, BasicAuthenticationFilter.class);
         return http.build();
