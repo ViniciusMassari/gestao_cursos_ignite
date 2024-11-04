@@ -207,4 +207,48 @@ public class CourseControllerTest {
 
         }
 
+        @DisplayName("Should be able to delete course")
+        @Test
+        public void should_delete_course() throws Exception {
+                String email = "test@example.com";
+                String password = "123456";
+                String encodedPassword = this.passwordEncoder.encode(password);
+                InstructorEntity instructorEntity = InstructorEntity.builder().name("NAME_TEST").email(email)
+                                .password(encodedPassword).build();
+                AuthInstructorDTO authInstructorDTO = AuthInstructorDTO.builder().email(email).password(password)
+                                .build();
+
+                this.instructorRepository.saveAndFlush(instructorEntity);
+
+                var response = mvc.perform(
+                                MockMvcRequestBuilders.post("/instructor/auth/")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(TestUtils.objectToJSON(
+                                                                authInstructorDTO)))
+                                .andReturn();
+                ObjectMapper mapper = new ObjectMapper();
+                AuthInstructorResponseDTO responseDTO = mapper.readValue(response.getResponse().getContentAsString(),
+                                AuthInstructorResponseDTO.class);
+
+                String token = responseDTO.getToken();
+
+                CourseEntity courseEntity = CourseEntity.builder().instructorId(instructorEntity.getId())
+                                .instructorEntity(instructorEntity).Active(CourseActive.ACTIVE).category("Category")
+                                .description("description").name("name").build();
+
+                courseRepository.saveAndFlush(courseEntity);
+
+                mvc.perform(
+                                MockMvcRequestBuilders.delete("/courses/" + courseEntity.getId())
+                                                .contentType(MediaType.APPLICATION_JSON)
+
+                                                .header("Authorization", "Bearer " + token))
+                                .andExpect(MockMvcResultMatchers.status().isOk());
+
+                Optional<CourseEntity> course = courseRepository.findById(courseEntity.getId());
+
+                assertEquals(course.isPresent(), false);
+
+        }
+
 }

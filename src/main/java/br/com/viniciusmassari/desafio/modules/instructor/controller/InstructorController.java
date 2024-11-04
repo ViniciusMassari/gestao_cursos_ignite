@@ -34,6 +34,7 @@ public class InstructorController {
 
     @DeleteMapping()
     public void delete_account() {
+
     }
 
 }
