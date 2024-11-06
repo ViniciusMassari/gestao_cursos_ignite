@@ -26,9 +26,18 @@ services:
       - SONARQUBE_DATABASE_PASSWORD=${PG_PASSWORD}
       - SONARQUBE_DATABASE_NAME=${PG_DB}
       - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
 
 networks:
   api_bridge:
     driver: bridge
   sonarqube-network:
     driver: bridge
+
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:

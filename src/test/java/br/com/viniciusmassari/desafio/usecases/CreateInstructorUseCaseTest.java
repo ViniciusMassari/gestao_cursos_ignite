@@ -21,7 +21,7 @@ import br.com.viniciusmassari.desafio.modules.instructor.repository.InstructorRe
 import br.com.viniciusmassari.desafio.modules.usecases.CreateInstructorUseCase;
 
 @ExtendWith(MockitoExtension.class)
-public class CreateInstructorUseCaseTest {
+class CreateInstructorUseCaseTest {
 
     @InjectMocks
     private CreateInstructorUseCase createInstructorUseCase;

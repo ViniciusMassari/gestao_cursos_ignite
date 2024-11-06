@@ -7,12 +7,14 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import br.com.viniciusmassari.desafio.exceptions.CourseNotFound;
 import br.com.viniciusmassari.desafio.exceptions.NotAllowed;
@@ -22,7 +24,8 @@ import br.com.viniciusmassari.desafio.modules.instructor.entity.InstructorEntity
 import br.com.viniciusmassari.desafio.modules.usecases.DeleteCourseUseCase;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DeleteCourseUseCaseTest {
+@ExtendWith(MockitoExtension.class)
+class DeleteCourseUseCaseTest {
 
     @InjectMocks
     private DeleteCourseUseCase deleteCourseUseCase;
