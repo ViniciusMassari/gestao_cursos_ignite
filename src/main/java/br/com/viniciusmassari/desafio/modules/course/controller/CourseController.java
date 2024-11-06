@@ -67,7 +67,6 @@ public class CourseController {
             var response = this.showAllCoursesUseCase.execute();
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.internalServerError()
                     .body("Não foi possivel retornar os cursos, tente novamente mais tarde");
         }

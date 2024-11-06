@@ -33,10 +33,10 @@ public class InstructorController {
         try {
             this.createInstructor.execute(createInstructorDTO);
         } catch (InstructorAlreadyExist e) {
-            e.printStackTrace();
+
             return ResponseEntity.badRequest().body("Usuário já existe");
         } catch (Exception e) {
-            e.printStackTrace();
+
             return ResponseEntity.internalServerError().body("Erro desconhecido, tente novamente mais tarde");
         }
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -51,13 +51,13 @@ public class InstructorController {
             deleteAccountUseCase.execute(loggedUser, targetUser);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NotAllowed e) {
-            e.printStackTrace();
+
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Você não está autorizado !");
         } catch (InstructorNotFound e) {
-            e.printStackTrace();
+
             return ResponseEntity.badRequest().body("Usuário não encontrado");
         } catch (Exception e) {
-            e.printStackTrace();
+
             return ResponseEntity.internalServerError().body("Erro interno, tente novamente mais tarde");
         }
     }

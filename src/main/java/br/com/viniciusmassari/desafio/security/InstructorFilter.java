@@ -44,7 +44,6 @@ public class InstructorFilter extends OncePerRequestFilter {
                     return;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
 
