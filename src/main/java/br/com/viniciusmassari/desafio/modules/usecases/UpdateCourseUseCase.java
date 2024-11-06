@@ -22,7 +22,7 @@ public class UpdateCourseUseCase {
     public void execute(UpdateCourseDTO updateCourseDTO, UUID courseUUID, UUID instructorId) {
         Optional<CourseEntity> course = this.courseRepository.findById(courseUUID);
         course.ifPresentOrElse((foundCourse) -> {
-            if (!instructorId.equals(foundCourse.getInstructorId()))
+            if (!instructorId.equals(foundCourse.getInstructorEntity().getId()))
                 throw new NotAllowed();
 
             if (this.nameIsNotNull(updateCourseDTO.getName())) {
@@ -40,10 +40,10 @@ public class UpdateCourseUseCase {
     }
 
     private boolean nameIsNotNull(String name) {
-        return !name.equals(null);
+        return !(name == null);
     }
 
     private boolean categoryIsNotNull(String category) {
-        return !category.equals(null);
+        return !(category == null);
     }
 }

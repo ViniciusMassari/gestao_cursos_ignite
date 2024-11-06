@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import br.com.viniciusmassari.desafio.exceptions.CourseNotFound;
+import br.com.viniciusmassari.desafio.exceptions.InstructorNotFound;
 import br.com.viniciusmassari.desafio.exceptions.NotAllowed;
 import br.com.viniciusmassari.desafio.modules.course.dto.CreateCourseDTO;
 import br.com.viniciusmassari.desafio.modules.course.dto.UpdateCourseDTO;
@@ -49,9 +50,10 @@ public class CourseController {
 
             this.createCourseUseCase.execute(createCourseDTO);
 
-            this.createCourseUseCase.execute(createCourseDTO);
-
             return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (InstructorNotFound e) {
+            return ResponseEntity.badRequest()
+                    .body("Não foi possível criar o curso, tenta novamente mais tarde");
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
                     .body("Não foi possível criar o curso, tenta novamente mais tarde");
@@ -81,7 +83,7 @@ public class CourseController {
 
         try {
             this.updateCourseUseCase.execute(updateCourseDTO, courseUUID, instructorUUID);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.noContent().build();
         } catch (NotAllowed e) {
             return ResponseEntity.badRequest().body("Você não está autorizado a alterar este curso");
         } catch (CourseNotFound e) {
@@ -99,7 +101,7 @@ public class CourseController {
         UUID courseUUID = UUID.fromString(courseId);
         try {
             this.changeCourseActiveStatusUseCase.execute(courseUUID, instructorUUID);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.noContent().build();
         } catch (NotAllowed e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Você não pode alterar o status do curso");
         } catch (CourseNotFound e) {
@@ -117,7 +119,7 @@ public class CourseController {
 
         try {
             deleteCourseUseCase.execute(courseUUID, instructorUUID);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.noContent().build();
         } catch (NotAllowed e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Você não está autorizado !");
         } catch (CourseNotFound e) {

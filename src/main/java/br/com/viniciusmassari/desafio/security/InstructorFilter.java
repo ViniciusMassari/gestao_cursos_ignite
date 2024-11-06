@@ -31,10 +31,10 @@ public class InstructorFilter extends OncePerRequestFilter {
         String header = request.getHeader("Authorization");
         ValidateTokenDTO decodedToken = ValidateTokenDTO.builder().build();
 
-        if (this.uriDoesNotStartWithCourses(request.getRequestURI())) {
+        if (this.doesNotNeedAuthenticationRoute(request.getRequestURI())) {
             filterChain.doFilter(request, response);
+            return;
         }
-
         if (header != null) {
             try {
                 decodedToken = this.tokenUtil.validateToken(header);
@@ -59,7 +59,8 @@ public class InstructorFilter extends OncePerRequestFilter {
         }
     }
 
-    private boolean uriDoesNotStartWithCourses(String requestUri) {
-        return !requestUri.startsWith("/courses") || requestUri.endsWith("show/");
+    private boolean doesNotNeedAuthenticationRoute(String requestUri) {
+        return requestUri.endsWith("show/") || requestUri.contains("auth")
+                || requestUri.contains("/instructor/create");
     }
 }

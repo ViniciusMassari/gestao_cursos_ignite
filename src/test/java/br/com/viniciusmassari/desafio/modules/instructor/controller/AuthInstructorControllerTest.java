@@ -32,45 +32,48 @@ import br.com.viniciusmassari.desafio.utils.TestUtils;
 @ActiveProfiles("test")
 public class AuthInstructorControllerTest {
 
-    private MockMvc mvc;
+        private MockMvc mvc;
 
-    @Autowired
-    private WebApplicationContext context;
+        @Autowired
+        private WebApplicationContext context;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+        @Autowired
+        private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private InstructorRepository instructorRepository;
+        @Autowired
+        private InstructorRepository instructorRepository;
 
-    @Before
-    public void setup() {
-        mvc = MockMvcBuilders.webAppContextSetup(context).apply(SecurityMockMvcConfigurers.springSecurity()).build();
-    }
+        @Before
+        public void setup() {
+                mvc = MockMvcBuilders.webAppContextSetup(context).apply(SecurityMockMvcConfigurers.springSecurity())
+                                .build();
+        }
 
-    @DisplayName("Should be able to auth an instructor")
-    @Test
-    public void should_auth_an_instructor() throws Exception {
-        String email = "test@example.com";
-        String password = "123456";
-        String encodedPassword = this.passwordEncoder.encode(password);
-        InstructorEntity instructorEntity = InstructorEntity.builder().name("NAME_TEST").email(email)
-                .password(encodedPassword).build();
-        AuthInstructorDTO authInstructorDTO = AuthInstructorDTO.builder().email(email).password(password).build();
+        @DisplayName("Should be able to auth an instructor")
+        @Test
+        public void should_auth_an_instructor() throws Exception {
+                String email = "test@example.com";
+                String password = "123456";
+                String encodedPassword = this.passwordEncoder.encode(password);
+                InstructorEntity instructorEntity = InstructorEntity.builder().name("NAME_TEST").email(email)
+                                .password(encodedPassword).build();
+                AuthInstructorDTO authInstructorDTO = AuthInstructorDTO.builder().email(email).password(password)
+                                .build();
 
-        this.instructorRepository.saveAndFlush(instructorEntity);
+                this.instructorRepository.saveAndFlush(instructorEntity);
 
-        var response = mvc.perform(
-                MockMvcRequestBuilders.post("/instructor/auth/")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestUtils.objectToJSON(
-                                authInstructorDTO)))
-                .andReturn();
-        ObjectMapper mapper = new ObjectMapper();
-        var responseDTO = mapper.readValue(response.getResponse().getContentAsString(),
-                AuthInstructorResponseDTO.class);
+                var response = mvc.perform(
+                                MockMvcRequestBuilders.post("/instructor/auth/")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(TestUtils.objectToJSON(
+                                                                authInstructorDTO)))
+                                .andReturn();
+                ObjectMapper mapper = new ObjectMapper();
+                var res = response.getResponse().getContentAsString();
+                var responseDTO = mapper.readValue(res,
+                                AuthInstructorResponseDTO.class);
 
-        assertInstanceOf(AuthInstructorResponseDTO.class, responseDTO);
-    }
+                assertInstanceOf(AuthInstructorResponseDTO.class, responseDTO);
+        }
 
 }

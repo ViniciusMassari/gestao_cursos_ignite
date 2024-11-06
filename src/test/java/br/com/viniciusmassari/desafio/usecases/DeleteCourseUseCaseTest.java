@@ -18,6 +18,7 @@ import br.com.viniciusmassari.desafio.exceptions.CourseNotFound;
 import br.com.viniciusmassari.desafio.exceptions.NotAllowed;
 import br.com.viniciusmassari.desafio.modules.course.entity.CourseEntity;
 import br.com.viniciusmassari.desafio.modules.course.repository.CourseRepository;
+import br.com.viniciusmassari.desafio.modules.instructor.entity.InstructorEntity;
 import br.com.viniciusmassari.desafio.modules.usecases.DeleteCourseUseCase;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,7 +47,8 @@ public class DeleteCourseUseCaseTest {
     @Test
     public void should_not_delete_a_course_with_not_allowed_user() {
         UUID notAllowdUser = UUID.randomUUID();
-        CourseEntity course = CourseEntity.builder().id(UUID.randomUUID()).instructorId(UUID.randomUUID()).build();
+        InstructorEntity instructorEntity = InstructorEntity.builder().id(UUID.randomUUID()).build();
+        CourseEntity course = CourseEntity.builder().id(UUID.randomUUID()).instructorEntity(instructorEntity).build();
 
         when(courseRepository.findById(course.getId())).thenReturn(Optional.of(course));
 
@@ -60,10 +62,11 @@ public class DeleteCourseUseCaseTest {
     @DisplayName("Should delete a course")
     @Test
     public void should_delete_a_course() {
-        CourseEntity course = CourseEntity.builder().id(UUID.randomUUID()).instructorId(UUID.randomUUID()).build();
+        InstructorEntity instructorEntity = InstructorEntity.builder().id(UUID.randomUUID()).build();
+        CourseEntity course = CourseEntity.builder().id(UUID.randomUUID()).instructorEntity(instructorEntity).build();
 
         when(courseRepository.findById(course.getId())).thenReturn(Optional.of(course));
 
-        assertDoesNotThrow(() -> deleteCourseUseCase.execute(course.getId(), course.getInstructorId()));
+        assertDoesNotThrow(() -> deleteCourseUseCase.execute(course.getId(), course.getInstructorEntity().getId()));
     }
 }

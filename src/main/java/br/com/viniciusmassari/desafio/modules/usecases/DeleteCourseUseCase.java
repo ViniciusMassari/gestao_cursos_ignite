@@ -21,7 +21,7 @@ public class DeleteCourseUseCase {
     public void execute(UUID courseUUID, UUID instructorId) {
         Optional<CourseEntity> course = this.courseRepository.findById(courseUUID);
         course.ifPresentOrElse((foundCourse) -> {
-            if (!instructorId.equals(foundCourse.getInstructorId()))
+            if (!instructorId.equals(foundCourse.getInstructorEntity().getId()))
                 throw new NotAllowed();
 
             this.courseRepository.deleteById(courseUUID);

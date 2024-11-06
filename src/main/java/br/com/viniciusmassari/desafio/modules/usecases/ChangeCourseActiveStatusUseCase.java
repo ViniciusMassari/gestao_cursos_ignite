@@ -24,7 +24,7 @@ public class ChangeCourseActiveStatusUseCase {
         Optional<CourseEntity> course = this.courseRepository.findById(courseId);
 
         course.ifPresentOrElse((foundCourse) -> {
-            if (!instructorId.equals(foundCourse.getInstructorId()))
+            if (!instructorId.equals(foundCourse.getInstructorEntity().getId()))
                 throw new NotAllowed();
 
             if (isCourseActive(foundCourse.getActive())) {

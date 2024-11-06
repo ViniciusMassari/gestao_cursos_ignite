@@ -12,7 +12,23 @@ services:
       - POSTGRES_DB=${PG_DB}
     networks:
       - api_bridge
+      - sonarqube-network
+
+  sonarqube:
+    env_file:
+      - path: .env
+    container_name: gestao_cursos_sonarqube
+    image: sonarqube:9.9.0-community
+    ports:
+      - 9000:9000
+    environment:
+      - SONARQUBE_DATABASE_USER=${PG_USER}
+      - SONARQUBE_DATABASE_PASSWORD=${PG_PASSWORD}
+      - SONARQUBE_DATABASE_NAME=${PG_DB}
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
 
 networks:
   api_bridge:
+    driver: bridge
+  sonarqube-network:
     driver: bridge

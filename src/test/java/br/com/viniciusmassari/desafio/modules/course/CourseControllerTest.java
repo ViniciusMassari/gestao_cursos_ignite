@@ -81,8 +81,8 @@ public class CourseControllerTest {
                                                                 authInstructorDTO)))
                                 .andReturn();
                 ObjectMapper mapper = new ObjectMapper();
-                var responseDTO = mapper.readValue(response.getResponse().getContentAsString(),
-                                AuthInstructorResponseDTO.class);
+                var res = response.getResponse().getContentAsString();
+                var responseDTO = mapper.readValue(res, AuthInstructorResponseDTO.class);
                 String token = responseDTO.getToken();
 
                 CreateCourseDTO createCourseDTO = CreateCourseDTO.builder().category("CATEGORY")
@@ -107,7 +107,7 @@ public class CourseControllerTest {
                 var createdInstructor = instructorRepository.saveAndFlush(instructorEntity);
                 CourseEntity courseEntity = CourseEntity.builder().name("COURSE").description("COURSE DESCRIPTION TEST")
                                 .category("Category").Active(CourseActive.ACTIVE)
-                                .instructorId(createdInstructor.getId()).instructorEntity(createdInstructor)
+                                .instructorEntity(createdInstructor)
                                 .build();
 
                 this.courseRepository.saveAndFlush(courseEntity);
@@ -134,7 +134,7 @@ public class CourseControllerTest {
 
                 CourseEntity courseEntity = CourseEntity.builder().name("COURSE").description("COURSE DESCRIPTION TEST")
                                 .category("Category").Active(CourseActive.ACTIVE)
-                                .instructorId(createdInstructor.getId()).instructorEntity(createdInstructor)
+                                .instructorEntity(createdInstructor)
                                 .build();
 
                 this.courseRepository.saveAndFlush(courseEntity);
@@ -160,7 +160,7 @@ public class CourseControllerTest {
                                                 .content(TestUtils.objectToJSON(
                                                                 updateCourseDTO))
                                                 .header("Authorization", "Bearer " + token))
-                                .andExpect(MockMvcResultMatchers.status().isOk());
+                                .andExpect(MockMvcResultMatchers.status().isNoContent());
         }
 
         @DisplayName("Should be able change course status")
@@ -183,12 +183,13 @@ public class CourseControllerTest {
                                                                 authInstructorDTO)))
                                 .andReturn();
                 ObjectMapper mapper = new ObjectMapper();
-                AuthInstructorResponseDTO responseDTO = mapper.readValue(response.getResponse().getContentAsString(),
+                var res = response.getResponse().getContentAsString();
+                var responseDTO = mapper.readValue(res,
                                 AuthInstructorResponseDTO.class);
 
                 String token = responseDTO.getToken();
 
-                CourseEntity courseEntity = CourseEntity.builder().instructorId(instructorEntity.getId())
+                CourseEntity courseEntity = CourseEntity.builder().instructorEntity(instructorEntity)
                                 .instructorEntity(instructorEntity).Active(CourseActive.ACTIVE).category("Category")
                                 .description("description").name("name").build();
 
@@ -199,7 +200,7 @@ public class CourseControllerTest {
                                                 .contentType(MediaType.APPLICATION_JSON)
 
                                                 .header("Authorization", "Bearer " + token))
-                                .andExpect(MockMvcResultMatchers.status().isOk());
+                                .andExpect(MockMvcResultMatchers.status().isNoContent());
 
                 Optional<CourseEntity> courseWithNewStatus = courseRepository.findById(courseEntity.getId());
 
@@ -227,12 +228,13 @@ public class CourseControllerTest {
                                                                 authInstructorDTO)))
                                 .andReturn();
                 ObjectMapper mapper = new ObjectMapper();
-                AuthInstructorResponseDTO responseDTO = mapper.readValue(response.getResponse().getContentAsString(),
+                var res = response.getResponse().getContentAsString();
+                var responseDTO = mapper.readValue(res,
                                 AuthInstructorResponseDTO.class);
 
                 String token = responseDTO.getToken();
 
-                CourseEntity courseEntity = CourseEntity.builder().instructorId(instructorEntity.getId())
+                CourseEntity courseEntity = CourseEntity.builder().instructorEntity(instructorEntity)
                                 .instructorEntity(instructorEntity).Active(CourseActive.ACTIVE).category("Category")
                                 .description("description").name("name").build();
 
@@ -243,7 +245,7 @@ public class CourseControllerTest {
                                                 .contentType(MediaType.APPLICATION_JSON)
 
                                                 .header("Authorization", "Bearer " + token))
-                                .andExpect(MockMvcResultMatchers.status().isOk());
+                                .andExpect(MockMvcResultMatchers.status().isNoContent());
 
                 Optional<CourseEntity> course = courseRepository.findById(courseEntity.getId());
 

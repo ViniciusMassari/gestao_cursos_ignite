@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import br.com.viniciusmassari.desafio.modules.instructor.entity.InstructorEntity;
@@ -36,12 +38,10 @@ public class CourseEntity {
     @Column(nullable = false)
     private CourseActive Active;
 
-    @ManyToOne()
-    @JoinColumn(name = "instructor_id", insertable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "instructor_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private InstructorEntity instructorEntity;
-
-    @Column(name = "instructor_id", nullable = false)
-    private UUID instructorId;
 
     @CreationTimestamp
     @Column(name = "created_at")

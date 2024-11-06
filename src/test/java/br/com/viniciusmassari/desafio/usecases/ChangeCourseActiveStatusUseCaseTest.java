@@ -19,6 +19,7 @@ import br.com.viniciusmassari.desafio.exceptions.NotAllowed;
 import br.com.viniciusmassari.desafio.modules.course.entity.CourseActive;
 import br.com.viniciusmassari.desafio.modules.course.entity.CourseEntity;
 import br.com.viniciusmassari.desafio.modules.course.repository.CourseRepository;
+import br.com.viniciusmassari.desafio.modules.instructor.entity.InstructorEntity;
 import br.com.viniciusmassari.desafio.modules.usecases.ChangeCourseActiveStatusUseCase;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,7 +47,8 @@ public class ChangeCourseActiveStatusUseCaseTest {
     @DisplayName("Should not change status with an unauthorized user")
     @Test
     public void should_not_change_status_with_an_unauthorized_user() {
-        CourseEntity course = CourseEntity.builder().id(UUID.randomUUID()).instructorId(UUID.randomUUID()).build();
+        InstructorEntity instructorEntity = InstructorEntity.builder().id(UUID.randomUUID()).build();
+        CourseEntity course = CourseEntity.builder().id(UUID.randomUUID()).instructorEntity(instructorEntity).build();
         UUID notAuthorizedUserUUID = UUID.randomUUID();
 
         when(courseRepository.findById(course.getId())).thenReturn(Optional.of(course));
@@ -60,10 +62,13 @@ public class ChangeCourseActiveStatusUseCaseTest {
     @DisplayName("Should change course status")
     @Test
     public void should_change_course_status() {
-        CourseEntity course = CourseEntity.builder().id(UUID.randomUUID()).instructorId(UUID.randomUUID())
+        InstructorEntity instructorEntity = InstructorEntity.builder().id(UUID.randomUUID()).build();
+        CourseEntity course = CourseEntity.builder().id(UUID.randomUUID()).instructorEntity(instructorEntity)
                 .Active(CourseActive.ACTIVE).build();
+
         when(courseRepository.findById(course.getId())).thenReturn(Optional.of(course));
-        assertDoesNotThrow(() -> changeCourseActiveStatusUseCase.execute(course.getId(), course.getInstructorId()));
+        assertDoesNotThrow(
+                () -> changeCourseActiveStatusUseCase.execute(course.getId(), course.getInstructorEntity().getId()));
     }
 
 }
