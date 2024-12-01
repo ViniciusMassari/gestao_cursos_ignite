@@ -12,11 +12,14 @@ import br.com.viniciusmassari.desafio.exceptions.CourseNotFound;
 import br.com.viniciusmassari.desafio.exceptions.InstructorNotFound;
 import br.com.viniciusmassari.desafio.exceptions.NotAllowed;
 import br.com.viniciusmassari.desafio.modules.course.dto.CreateCourseDTO;
+import br.com.viniciusmassari.desafio.modules.course.dto.ShowCourseDTO;
+import br.com.viniciusmassari.desafio.modules.course.dto.ShowCourseResponseDTO;
 import br.com.viniciusmassari.desafio.modules.course.dto.UpdateCourseDTO;
 import br.com.viniciusmassari.desafio.modules.usecases.ChangeCourseActiveStatusUseCase;
 import br.com.viniciusmassari.desafio.modules.usecases.CreateCourseUseCase;
 import br.com.viniciusmassari.desafio.modules.usecases.DeleteCourseUseCase;
 import br.com.viniciusmassari.desafio.modules.usecases.ShowAllCoursesUseCase;
+import br.com.viniciusmassari.desafio.modules.usecases.ShowCourseUseCase;
 import br.com.viniciusmassari.desafio.modules.usecases.UpdateCourseUseCase;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -39,6 +42,9 @@ public class CourseController {
 
     @Autowired
     private DeleteCourseUseCase deleteCourseUseCase;
+
+    @Autowired
+    private ShowCourseUseCase showCourseUseCase;
 
     @PostMapping("/")
     @PreAuthorize("hasRole('INSTRUCTOR')")
@@ -121,6 +127,20 @@ public class CourseController {
             return ResponseEntity.noContent().build();
         } catch (NotAllowed e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Você não está autorizado !");
+        } catch (CourseNotFound e) {
+            return ResponseEntity.badRequest().body("Curso não encontrado");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Erro interno, tente novamente mais tarde");
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> get_course(@PathVariable("id") String courseId) {
+        UUID courseUUID = UUID.fromString(courseId);
+        ShowCourseDTO showCourseDTO = ShowCourseDTO.builder().courseId(courseUUID).build();
+        try {
+            ShowCourseResponseDTO response = this.showCourseUseCase.execute(showCourseDTO);
+            return ResponseEntity.ok().body(response);
         } catch (CourseNotFound e) {
             return ResponseEntity.badRequest().body("Curso não encontrado");
         } catch (Exception e) {

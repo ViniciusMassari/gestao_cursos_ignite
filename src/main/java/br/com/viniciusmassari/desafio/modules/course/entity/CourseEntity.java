@@ -3,17 +3,10 @@ package br.com.viniciusmassari.desafio.modules.course.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import br.com.viniciusmassari.desafio.modules.instructor.entity.InstructorEntity;
+import org.hibernate.annotations.*;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity(name = "course")
 @Data

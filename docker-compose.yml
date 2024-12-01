@@ -18,9 +18,9 @@ services:
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_USER=${PG_USER}
-      - POSTGRES_PASSWORD=${PG_PASSWORD}
-      - POSTGRES_DB=${PG_DB}
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=gestao_cursos
     networks:
       - api_bridge
       - sonarqube-network
@@ -41,13 +41,11 @@ services:
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_extensions:/opt/sonarqube/extensions
       - sonarqube_logs:/opt/sonarqube/logs
-
 networks:
   api_bridge:
     driver: bridge
   sonarqube-network:
     driver: bridge
-
 volumes:
   sonarqube_data:
   sonarqube_extensions:
