@@ -68,9 +68,10 @@ public class CourseController {
     }
 
     @GetMapping("/show/")
-    public ResponseEntity<Object> show_all_courses() {
+    public ResponseEntity<Object> show_all_courses(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int perPage) {
         try {
-            var response = this.showAllCoursesUseCase.execute();
+            var response = this.showAllCoursesUseCase.execute(page, perPage);
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
             return ResponseEntity.internalServerError()

@@ -112,7 +112,7 @@ public class CourseControllerTest {
 
                 this.courseRepository.saveAndFlush(courseEntity);
 
-                var result = mvc.perform(MockMvcRequestBuilders.get("/courses/show/"))
+                var result = mvc.perform(MockMvcRequestBuilders.get("/courses/show/?page=0&perPage=10"))
                                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
                 assertTrue(!result.getResponse().getContentAsString().isEmpty());

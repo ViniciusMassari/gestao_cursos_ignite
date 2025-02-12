@@ -37,6 +37,7 @@ public class TokenUtil {
                     .withExpiresAt(expiresIn)
                     .sign(algorithm);
         } catch (JWTCreationException e) {
+            e.printStackTrace();
             throw new JWTCreationException("JWT could not be created", e);
         }
     }

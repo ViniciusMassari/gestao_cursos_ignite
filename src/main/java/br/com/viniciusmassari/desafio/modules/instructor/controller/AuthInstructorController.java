@@ -25,11 +25,13 @@ public class AuthInstructorController {
             var response = authInstructorUseCase.execute(authInstructor);
             return ResponseEntity.ok().body(response);
         } catch (JwtCouldNotBeCreated e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError()
                     .body("Um erro ocorreu ao tentar logar, tente novamente mais tarde");
         } catch (WrongCredentials e) {
             return ResponseEntity.badRequest().body("Credenciais erradas, verifique as informações e tente novamente");
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError()
                     .body("Erro interno no servidor, tente novamente");
         }
