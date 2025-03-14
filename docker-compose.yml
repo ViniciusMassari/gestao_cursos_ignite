@@ -11,8 +11,6 @@ services:
   #   networks:
   #     - api_bridge
   postgres:
-    env_file:
-      - path: .env
     container_name: gestao_cursos_postgres
     image: bitnami/postgresql
     ports:
@@ -25,22 +23,22 @@ services:
       - api_bridge
       - sonarqube-network
 
-  sonarqube:
-    env_file:
-      - path: .env
-    container_name: gestao_cursos_sonarqube
-    image: sonarqube:9.9.0-community
-    ports:
-      - 9000:9000
-    environment:
-      - SONARQUBE_DATABASE_USER=${PG_USER}
-      - SONARQUBE_DATABASE_PASSWORD=${PG_PASSWORD}
-      - SONARQUBE_DATABASE_NAME=${PG_DB}
-      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
-    volumes:
-      - sonarqube_data:/opt/sonarqube/data
-      - sonarqube_extensions:/opt/sonarqube/extensions
-      - sonarqube_logs:/opt/sonarqube/logs
+  # sonarqube:
+  #   env_file:
+  #     - path: .env
+  #   container_name: gestao_cursos_sonarqube
+  #   image: sonarqube:9.9.0-community
+  #   ports:
+  #     - 9000:9000
+  #   environment:
+  #     - SONARQUBE_DATABASE_USER=${PG_USER}
+  #     - SONARQUBE_DATABASE_PASSWORD=${PG_PASSWORD}
+  #     - SONARQUBE_DATABASE_NAME=${PG_DB}
+  #     - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+  #   volumes:
+  #     - sonarqube_data:/opt/sonarqube/data
+  #     - sonarqube_extensions:/opt/sonarqube/extensions
+  #     - sonarqube_logs:/opt/sonarqube/logs
 networks:
   api_bridge:
     driver: bridge

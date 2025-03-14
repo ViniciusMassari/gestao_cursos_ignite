@@ -21,6 +21,7 @@ import br.com.viniciusmassari.desafio.modules.usecases.DeleteCourseUseCase;
 import br.com.viniciusmassari.desafio.modules.usecases.ShowAllCoursesUseCase;
 import br.com.viniciusmassari.desafio.modules.usecases.ShowCourseUseCase;
 import br.com.viniciusmassari.desafio.modules.usecases.UpdateCourseUseCase;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
@@ -48,6 +49,7 @@ public class CourseController {
 
     @PostMapping("/")
     @PreAuthorize("hasRole('INSTRUCTOR')")
+    @RateLimiter(name = "universalRateLimiter")
     public ResponseEntity<Object> create_course(@Valid @RequestBody CreateCourseDTO createCourseDTO,
             HttpServletRequest request) {
         try {

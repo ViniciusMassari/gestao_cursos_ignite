@@ -11,6 +11,7 @@ import br.com.viniciusmassari.desafio.exceptions.JwtCouldNotBeCreated;
 import br.com.viniciusmassari.desafio.exceptions.WrongCredentials;
 import br.com.viniciusmassari.desafio.modules.instructor.dto.AuthInstructorDTO;
 import br.com.viniciusmassari.desafio.modules.usecases.AuthInstructorUseCase;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 
 @RestController
@@ -20,6 +21,7 @@ public class AuthInstructorController {
     AuthInstructorUseCase authInstructorUseCase;
 
     @PostMapping("/")
+    @RateLimiter(name = "universalRateLimiter")
     public ResponseEntity<Object> auth_instructor(@Valid @RequestBody AuthInstructorDTO authInstructor) {
         try {
             var response = authInstructorUseCase.execute(authInstructor);
