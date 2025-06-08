@@ -49,6 +49,6 @@ public class AuthInstructorUseCase {
             throw new JwtCouldNotBeCreated("It was not possible to log in, try again later", e);
         }
 
-        return AuthInstructorResponseDTO.builder().token(token).build();
+        return new AuthInstructorResponseDTO(token);
     }
 }

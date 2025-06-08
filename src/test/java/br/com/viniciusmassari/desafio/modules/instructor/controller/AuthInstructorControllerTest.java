@@ -27,8 +27,8 @@ import br.com.viniciusmassari.desafio.modules.instructor.entity.InstructorEntity
 import br.com.viniciusmassari.desafio.modules.instructor.repository.InstructorRepository;
 import br.com.viniciusmassari.desafio.utils.TestUtils;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 public class AuthInstructorControllerTest {
 

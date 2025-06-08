@@ -48,7 +48,7 @@ public class TokenUtil {
         JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT decodedJWT = verifier.verify(newToken);
 
-        return ValidateTokenDTO.builder().token(decodedJWT).subject(decodedJWT.getSubject()).build();
+        return new ValidateTokenDTO(decodedJWT, decodedJWT.getSubject());
     }
 
     private RSAPrivateKey getPrivateKey() throws Exception {

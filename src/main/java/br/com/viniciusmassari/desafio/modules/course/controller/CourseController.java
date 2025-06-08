@@ -12,6 +12,7 @@ import br.com.viniciusmassari.desafio.exceptions.CourseNotFound;
 import br.com.viniciusmassari.desafio.exceptions.InstructorNotFound;
 import br.com.viniciusmassari.desafio.exceptions.NotAllowed;
 import br.com.viniciusmassari.desafio.modules.course.dto.CreateCourseDTO;
+import br.com.viniciusmassari.desafio.modules.course.dto.ShowAllCoursesResponseDTO;
 import br.com.viniciusmassari.desafio.modules.course.dto.ShowCourseDTO;
 import br.com.viniciusmassari.desafio.modules.course.dto.ShowCourseResponseDTO;
 import br.com.viniciusmassari.desafio.modules.course.dto.UpdateCourseDTO;
@@ -22,6 +23,10 @@ import br.com.viniciusmassari.desafio.modules.usecases.ShowAllCoursesUseCase;
 import br.com.viniciusmassari.desafio.modules.usecases.ShowCourseUseCase;
 import br.com.viniciusmassari.desafio.modules.usecases.UpdateCourseUseCase;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
@@ -70,10 +75,13 @@ public class CourseController {
     }
 
     @GetMapping("/show/")
+    @Operation(responses = { @ApiResponse(responseCode = "200", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = ShowAllCoursesResponseDTO.class)),
+            @Content(mediaType = "text/plain", schema = @Schema(example = "Não foi possivel retornar os cursos, tente novamente mais tarde")) }) })
     public ResponseEntity<Object> show_all_courses(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int perPage) {
         try {
-            var response = this.showAllCoursesUseCase.execute(page, perPage);
+            ShowAllCoursesResponseDTO response = this.showAllCoursesUseCase.execute(page, perPage);
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
@@ -83,6 +91,9 @@ public class CourseController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('INSTRUCTOR')")
+    @Operation(responses = { @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "400", description = "Curso não encontrado ou usuário não autorizado"),
+            @ApiResponse(responseCode = "500", description = "Não foi possível continuar, tente novamente mais tarde") })
     public ResponseEntity<Object> update_course(@PathVariable("id") String courseId,
             @Valid @RequestBody UpdateCourseDTO updateCourseDTO,
             HttpServletRequest request) {
@@ -103,6 +114,12 @@ public class CourseController {
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('INSTRUCTOR')")
+    @Operation(responses = {
+            @ApiResponse(responseCode = "204", description = "Status do curso alterado com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Usuário não pode alterar o status do curso", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "Curso não encontrado", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor", content = @Content(mediaType = "text/plain")),
+    })
     public ResponseEntity<Object> change_course_active_status(@PathVariable("id") String courseId,
             HttpServletRequest request) {
         UUID instructorUUID = UUID.fromString(request.getAttribute("instructor_id").toString());
@@ -121,6 +138,12 @@ public class CourseController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('INSTRUCTOR')")
+    @Operation(responses = {
+            @ApiResponse(responseCode = "204", description = "Status do curso alterado com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Usuário não pode alterar deletar o curso", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "Curso não encontrado", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor", content = @Content(mediaType = "text/plain")),
+    })
     public ResponseEntity<Object> delete_course(@PathVariable("id") String courseId, HttpServletRequest request) {
         UUID instructorUUID = UUID.fromString(request.getAttribute("instructor_id").toString());
         UUID courseUUID = UUID.fromString(courseId);
@@ -138,6 +161,11 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
+    @Operation(responses = {
+            @ApiResponse(responseCode = "200", description = "Curso encontrado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ShowCourseResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Curso não encontrado", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor", content = @Content(mediaType = "text/plain")),
+    })
     public ResponseEntity<Object> get_course(@PathVariable("id") String courseId) {
         UUID courseUUID = UUID.fromString(courseId);
         ShowCourseDTO showCourseDTO = ShowCourseDTO.builder().courseId(courseUUID).build();

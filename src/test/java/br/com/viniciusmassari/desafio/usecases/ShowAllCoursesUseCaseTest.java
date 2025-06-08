@@ -43,7 +43,7 @@ class ShowAllCoursesUseCaseTest {
         when(courseRepository.findAll(pageable)).thenReturn(courseEntitiesPage);
         assertDoesNotThrow(() -> {
             ShowAllCoursesResponseDTO response = this.showAllCoursesUseCase.execute(0, 10);
-            assertEquals(0, response.courses.getContent().size());
+            assertEquals(0, response.courses().getContent().size());
         });
     }
 
@@ -64,7 +64,7 @@ class ShowAllCoursesUseCaseTest {
 
         assertDoesNotThrow(() -> {
             var response = this.showAllCoursesUseCase.execute(0, 10);
-            assertEquals(2, response.courses.getContent().size());
+            assertEquals(2, response.courses().getContent().size());
         });
     }
 

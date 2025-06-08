@@ -29,37 +29,27 @@ public class InstructorFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String header = request.getHeader("Authorization");
-        ValidateTokenDTO decodedToken = ValidateTokenDTO.builder().build();
 
-        if (this.doesNotNeedAuthenticationRoute(request.getRequestURI())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         if (header != null) {
             try {
-                decodedToken = this.tokenUtil.validateToken(header);
+                ValidateTokenDTO decodedToken = this.tokenUtil.validateToken(header);
 
-                if (decodedToken.getSubject().equals(null)) {
+                if (decodedToken.subject().equals(null)) {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     return;
                 }
+                request.setAttribute("instructor_id", decodedToken.subject());
+                var roles = decodedToken.token().getClaim("roles").asList(Object.class);
+                var grants = roles.stream().map(role -> new SimpleGrantedAuthority(role.toString())).toList();
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                        decodedToken.subject(), null,
+                        grants);
+                SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
 
-            request.setAttribute("instructor_id", decodedToken.getSubject());
-            var roles = decodedToken.getToken().getClaim("roles").asList(Object.class);
-            var grants = roles.stream().map(role -> new SimpleGrantedAuthority(role.toString())).toList();
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                    decodedToken.getSubject(), null,
-                    grants);
-            SecurityContextHolder.getContext().setAuthentication(auth);
-            filterChain.doFilter(request, response);
         }
-    }
-
-    private boolean doesNotNeedAuthenticationRoute(String requestUri) {
-        return requestUri.endsWith("show/") || requestUri.contains("auth")
-                || requestUri.contains("/instructor/create");
+        filterChain.doFilter(request, response);
     }
 }

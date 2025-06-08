@@ -1,12 +1,9 @@
 package br.com.viniciusmassari.desafio.modules.usecases;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-import br.com.viniciusmassari.desafio.modules.course.dto.ShowAllCoursesResponseDTO;
-import br.com.viniciusmassari.desafio.modules.course.entity.CourseEntity;
+import br.com.viniciusmassari.desafio.modules.course.dto.*;
 import br.com.viniciusmassari.desafio.modules.course.repository.CourseRepository;
 
 @Service
@@ -19,7 +16,10 @@ public class ShowAllCoursesUseCase {
 
     public ShowAllCoursesResponseDTO execute(int page, int perPage) {
         Pageable pageable = PageRequest.of(page, perPage);
-        Page<CourseEntity> courses = this.courseRepository.findAll(pageable);
-        return ShowAllCoursesResponseDTO.builder().courses(courses).build();
+        Page<ShowCourseResponseDTO> courses = this.courseRepository.findAll(pageable)
+                .map((courseEntity) -> new ShowCourseResponseDTO(courseEntity.getId(), courseEntity.getName(),
+                        courseEntity.getDescription(), courseEntity.getCategory(), courseEntity.getActive(),
+                        courseEntity.getInstructorEntity().getName(), courseEntity.getInstructorEntity().getId()));
+        return new ShowAllCoursesResponseDTO(courses);
     }
 }

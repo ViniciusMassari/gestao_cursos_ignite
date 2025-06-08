@@ -84,7 +84,7 @@ public class InstructorControllerTest {
                 AuthInstructorResponseDTO responseDTO = mapper.readValue(response.getResponse().getContentAsString(),
                                 AuthInstructorResponseDTO.class);
 
-                String token = responseDTO.getToken();
+                String token = responseDTO.token();
 
                 mvc.perform(
                                 MockMvcRequestBuilders.delete("/instructor/delete/" + instructorEntity.getId())

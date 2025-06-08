@@ -17,15 +17,26 @@ public class SecurityConfig {
     @Autowired
     InstructorFilter instructorFilter;
 
+    private static final String[] SWAGGER_LIST = {
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-resources/**"
+    };
+    private static final String[] PUBLIC_ROUTES = {
+            "/instructor/create",
+            "/instructor/auth/",
+            "/courses/show/",
+            "/actuator/**"
+    };
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/instructor/create").permitAll()
-                            .requestMatchers("/instructor/auth/").permitAll()
-                            .requestMatchers("/courses/show/").permitAll();
+                    auth.requestMatchers(PUBLIC_ROUTES).permitAll()
+                            .requestMatchers(SWAGGER_LIST).permitAll();
                     auth.anyRequest().authenticated();
-                }).addFilterBefore(this.instructorFilter, BasicAuthenticationFilter.class);
+                }).addFilterAfter(this.instructorFilter, BasicAuthenticationFilter.class);
         return http.build();
     }
 

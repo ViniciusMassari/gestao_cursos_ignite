@@ -14,11 +14,18 @@ import br.com.viniciusmassari.desafio.exceptions.NotAllowed;
 import br.com.viniciusmassari.desafio.modules.instructor.dto.CreateInstructorDTO;
 import br.com.viniciusmassari.desafio.modules.usecases.CreateInstructorUseCase;
 import br.com.viniciusmassari.desafio.modules.usecases.DeleteAccountUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/instructor")
+@Tag(name = "Instructor", description = "Rotas referentes ao instrutor")
 public class InstructorController {
 
     @Autowired
@@ -28,7 +35,12 @@ public class InstructorController {
     private DeleteAccountUseCase deleteAccountUseCase;
 
     @PostMapping("/create")
-    public ResponseEntity<Object> create_account(@Valid @RequestBody CreateInstructorDTO createInstructorDTO) {
+    @Operation(description = "Cria uma nova conta / Create a new account", responses = {
+            @ApiResponse(responseCode = "201"), @ApiResponse(responseCode = "400", content = {
+                    @Content(mediaType = "text/plain", schema = @Schema(example = "Usuário já existe")) }),
+            @ApiResponse(responseCode = "500", content = {
+                    @Content(mediaType = "text/plain", schema = @Schema(example = "Erro desconhecido, tente novamente mais tarde")) }) })
+    public ResponseEntity<?> create_account(@Valid @RequestBody CreateInstructorDTO createInstructorDTO) {
 
         try {
             this.createInstructor.execute(createInstructorDTO);
@@ -44,7 +56,16 @@ public class InstructorController {
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('INSTRUCTOR')")
-    public ResponseEntity<Object> delete_account(@PathVariable String id, HttpServletRequest request) {
+    @Operation(description = "Deleta uma conta / Delete an account", responses = {
+            @ApiResponse(responseCode = "401", content = {
+                    @Content(mediaType = "text/plain", schema = @Schema(example = "Você não está autorizado !")) }),
+            @ApiResponse(responseCode = "500", content = {
+                    @Content(mediaType = "text/plain", schema = @Schema(example = "Erro interno, tente novamente mais tarde")) }),
+            @ApiResponse(responseCode = "400", content = {
+                    @Content(mediaType = "text/plain", schema = @Schema(example = "Usuário não encontrado")) }) })
+    public ResponseEntity<?> delete_account(
+            @Parameter(description = "Id do usuário", example = "0237d69a-0a04-4df7-9bb1-2ca83e52fae1") @PathVariable String id,
+            HttpServletRequest request) {
         UUID loggedUser = UUID.fromString(request.getAttribute("instructor_id").toString());
         UUID targetUser = UUID.fromString(id);
         try {

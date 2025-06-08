@@ -1,16 +1,9 @@
 package br.com.viniciusmassari.desafio.modules.course.dto;
 
-import br.com.viniciusmassari.desafio.modules.course.entity.CourseEntity;
-import org.springframework.data.domain.Page;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class ShowAllCoursesResponseDTO {
-    public Page<CourseEntity> courses;
+import org.springframework.data.domain.Page;
+
+public record ShowAllCoursesResponseDTO(@Schema Page<ShowCourseResponseDTO> courses) {
+
 }

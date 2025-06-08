@@ -83,7 +83,7 @@ public class CourseControllerTest {
                 ObjectMapper mapper = new ObjectMapper();
                 var res = response.getResponse().getContentAsString();
                 var responseDTO = mapper.readValue(res, AuthInstructorResponseDTO.class);
-                String token = responseDTO.getToken();
+                String token = responseDTO.token();
 
                 CreateCourseDTO createCourseDTO = CreateCourseDTO.builder().category("CATEGORY")
                                 .description("DESCRIPTION")
@@ -149,7 +149,7 @@ public class CourseControllerTest {
                 ObjectMapper mapper = new ObjectMapper();
                 var responseDTO = mapper.readValue(response.getResponse().getContentAsString(),
                                 AuthInstructorResponseDTO.class);
-                String token = responseDTO.getToken();
+                String token = responseDTO.token();
 
                 UpdateCourseDTO updateCourseDTO = UpdateCourseDTO.builder().category("NEW CATEGORY").name("NEW NAME")
                                 .build();
@@ -187,7 +187,7 @@ public class CourseControllerTest {
                 var responseDTO = mapper.readValue(res,
                                 AuthInstructorResponseDTO.class);
 
-                String token = responseDTO.getToken();
+                String token = responseDTO.token();
 
                 CourseEntity courseEntity = CourseEntity.builder().instructorEntity(instructorEntity)
                                 .instructorEntity(instructorEntity).Active(CourseActive.ACTIVE).category("Category")
@@ -232,7 +232,7 @@ public class CourseControllerTest {
                 var responseDTO = mapper.readValue(res,
                                 AuthInstructorResponseDTO.class);
 
-                String token = responseDTO.getToken();
+                String token = responseDTO.token();
 
                 CourseEntity courseEntity = CourseEntity.builder().instructorEntity(instructorEntity)
                                 .instructorEntity(instructorEntity).Active(CourseActive.ACTIVE).category("Category")
